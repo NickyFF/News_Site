@@ -2,9 +2,9 @@ from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.urls import reverse
 
 # Create your models here.
-
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
@@ -54,6 +54,12 @@ class Post(models.Model):
     rate_news = models.FloatField(default = 0.0)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.title} : {self.text_author}'
+    
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
     def like(self):
         self.rate_news += 1
