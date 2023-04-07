@@ -2,6 +2,9 @@ from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.urls import reverse
+from allauth.account.forms import SignupForm
+from django.contrib.auth.models import Group
 
 # Create your models here.
 
@@ -57,6 +60,9 @@ class Post(models.Model):
     def __str__(self):
         return f'{self.title} : {self.text_author}'
     
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
+
     def like(self):
         self.rate_news += 1
         self.save()
@@ -86,3 +92,11 @@ class Comment(models.Model):
     def dislike(self):
         self.rate_comment -= 1
         self.save()
+
+class BasicSignupForm(SignupForm):
+    
+    def save(self, request):
+        user = super(BasicSignupForm, self).save(request)
+        basic_group = Group.objects.get(name='common')
+        basic_group.user_set.add(user)
+        return user
