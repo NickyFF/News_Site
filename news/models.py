@@ -25,14 +25,14 @@ class Author(models.Model):
         self.save()
 
 class Category(models.Model):
-    culture = 'CU'
-    science = 'SC'
-    tech = 'TE'
-    politics = 'PO'
-    sport = 'SP'
-    entertainment = 'EN'
-    economics = 'EC'
-    education = 'ED'
+    culture = 'CULTURE'
+    science = 'SCIENCE'
+    tech = 'TECH'
+    politics = 'POLITICS'
+    sport = 'SPORT'
+    entertainment = 'ENTERTAINMENT'
+    economics = 'ECONOMICS'
+    education = 'EDUCATIONS'
 
     CATEGORIES = [
         (culture, 'Культура'),
@@ -44,7 +44,11 @@ class Category(models.Model):
         (economics, 'Экономика'),
         (education, 'Образование')
     ]
-    tematic = models.CharField(max_length=2, unique = True, choices=CATEGORIES)
+    tematic = models.CharField(max_length=100, unique = True, choices=CATEGORIES)
+    subscribers = models.ManyToManyField(User, related_name='categories')
+
+    def __str__(self):
+        return self.tematic
 
 class Post(models.Model):
     author = models.ForeignKey(Author, on_delete = models.CASCADE)
