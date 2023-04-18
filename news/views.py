@@ -153,7 +153,7 @@ def subscribe(request, pk):
         subject=f'{user} {category.tematic}',
         body=category.tematic,
         from_email='nikitakryz2000@yandex.ru',
-        to=['nikitakryzm@mail.ru'],
+        to=['nikirakryzx@gmail.com'],
     )
     msg.attach_alternative(html_content, "text/html")
 

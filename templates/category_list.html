@@ -13,6 +13,7 @@ News
     <h4><a href="categories/{{ category.id }}" >{{ category }}</a></h4>
 
     <form action="" method="get">
+        {% csrf_token %}
         {{ filterset.form.as_p }}
         {% if is_not_subscriber %}
           <p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
