@@ -1,0 +1,66 @@
+# Создание пользователей
+User.objects.create_user('Kolovrat')
+User.objects.create_user('Tolik')
+
+# Создание авторов связаных с пользователями
+Author.objects.create(user = User.objects.get(username='Kolovrat'))
+Author.objects.create(user = User.objects.get(username='Tolik'))
+
+# Создание категорий
+Category.objects.create(tematic='Экономика')
+Category.objects.create(tematic = 'Политика')
+Category.objects.create(tematic = 'Развлечение')
+Category.objects.create(tematic = 'Образование')
+
+# Создание статей/новостей
+Post.objects.create(author_id=1, title='Спортивные события', text_author='Все важные события', rate_news=5)
+Post.objects.create(author_id=2, news=False, title='Политика ТВ', text_author='Собития политики с вами', rate_news=7)
+Post.objects.create(author_id=2, news=False, title='Праздники', text_author='Развлечения в разгаре', rate_news=10)
+
+# Присвоение категорий
+p1 = Post.objects.get(id=1)
+p1.category.add(Category.objects.get(pk=9))
+p1.category.add(Category.objects.get(pk=10))
+
+p2 = Post.objects.get(id=2)
+p2.category.add(Category.objects.get(pk=11))
+p2.category.add(Category.objects.get(pk=12))
+
+# Добавление комментов
+Comment.objects.create(post_id=1, user_id=1, comment_text='Все круто', rate_comment=5)
+Comment.objects.create(post_id=3, user_id=2, comment_text='Коммент 2', rate_comment=7)
+
+# Like/Dislike
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=3).dislike()
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=2).dislike()
+
+# Обновление рейтинга
+Author.objects.get(pk=1).update_rating()
+Author.objects.get(pk=2).update_rating()
+
+# Вывести username и рейтинг лучшего пользователя
+Author.objects.order_by('rate_user').last().user.username
+Author.objects.order_by('rate_user').last().rate_user
+
+# Вывести дату добавления, username автора, рейтинг, 
+# заголовок и превью лучшей статьи, основываясь на лайках/дислайках к этой статье.
+
+author_best = Post.objects.order_by('rate_news').last()
+author_best.time_in
+author_best.author.user.username
+author_best.rate_news
+author_best.title
+author_best.preview()
+
+# Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье.
+
+comments = Comment.objects.all().filter(post_id = author_best.id)
+for comment in comments:
+	print(comment.time_in)
+	print(User.objects.get(id=comment.user_id))
+	print(comment.rate_comment)
+	print(comment.comment_text)
+
+
