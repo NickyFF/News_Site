@@ -4,6 +4,8 @@
 
 {% load custom_tags %}
 
+{% load cache %}
+
 {% block title %}
 News
 {% endblock title %}
@@ -21,6 +23,7 @@ News
     </form>
 
     <hr>
+{% cache 30 table %}
     {% if category_news_list %}
        <table>
            <tr>
@@ -42,9 +45,11 @@ News
            </tr>
            {% endfor %}
        </table>
+
    {% else %}
        <h2>Актульных новостей нет</h2>
    {% endif %}
+{% endcache %}
 
    {% if page_obj.has_previous %}
        <a href="?{% url_replace page=1 %}">1</a>

@@ -6,6 +6,8 @@ from django.urls import reverse
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import Group
 
+from django.core.cache import cache
+
 # Create your models here.
 
 class Author(models.Model):
@@ -65,7 +67,7 @@ class Post(models.Model):
         return f'{self.title} : {self.text_author}'
     
     def get_absolute_url(self):
-        return reverse('post_detail', args=[str(self.id)])
+        return f'/news/{self.id}'
 
     def like(self):
         self.rate_news += 1
@@ -77,6 +79,10 @@ class Post(models.Model):
     
     def preview(self):
         return f'{self.text_author[0:124]}...'
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs) # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'post-{self.pk}') # затем удаляем его из кэша, чтобы сбросить его
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete = models.CASCADE)

@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
+from django.core.cache import cache
 
 from .models import Post, Category, Author
 from .filters import PostFilter
@@ -25,8 +26,7 @@ class PostList(ListView):
        # Получаем обычный запрос
        queryset = super().get_queryset()
        # Используем наш класс фильтрации.
-       # self.request.GET содержит объект QueryDict, который мы рассматривали
-       # в этом юните ранее.
+       # self.request.GET содержит объект QueryDict
        # Сохраняем нашу фильтрацию в объекте класса,
        # чтобы потом добавить в контекст и использовать в шаблоне.
        self.filterset = PostFilter(self.request.GET, queryset)
@@ -48,6 +48,16 @@ class PostDetail(DetailView):
     model = Post
     template_name = 'posts.html'
     context_object_name = 'posts'
+
+    def get_object(self, *args, **kwargs): # переопределяем метод получения объекта, как ни странно
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None) # кэш очень похож на словарь, и метод get действует так же. Он забирает значение по ключу, если его нет, то забирает None.
+ 
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+        
+        return obj
 
 class PostSearch(ListView):
         model = Post

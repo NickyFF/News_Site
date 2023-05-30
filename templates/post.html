@@ -8,6 +8,8 @@ Post
  
 {% load custom_filters %}
 
+{% load cache %}
+
 {% load custom_tags %}
 
 {% block content %}
@@ -20,6 +22,7 @@ Post
    <h3>{{ time_now|date:'M d Y' }}</h3>
    <hr>
 
+{% cache 30 table %}
    {% if post %}
        <table>
            <tr>
@@ -35,11 +38,13 @@ Post
                <td>{{ posts.text_author|truncatechars:20|currency }}</td>
            </tr>
            {% endfor %}
-
+        
        </table>
+
    {% else %}
        <h2>Новостей нет!</h2>
    {% endif %}
+{% endcache %}
 
    {% if page_obj.has_previous %}
        {# Для каждой ссылки пагинации указываем обработку через новый тег #}

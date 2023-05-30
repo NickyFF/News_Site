@@ -15,7 +15,7 @@ def currency(value):
    """
    for word in EXCEPTION_SYMBOLS:
       if word in value:
-         censor_word = word[0] + (len(word) - 1) * '*'
+         censor_word = word[0] + (len(word) - 2) * '*' + (len(word) - 1)
          value = value.replace(word, censor_word)
    # Возвращаемое функцией значение подставится в шаблон.
    return value
