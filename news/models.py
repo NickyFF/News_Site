@@ -8,8 +8,6 @@ from django.contrib.auth.models import Group
 
 from django.core.cache import cache
 
-# Create your models here.
-
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
     rate_user = models.FloatField(default = 0.0)

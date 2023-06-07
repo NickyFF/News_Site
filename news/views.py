@@ -12,8 +12,7 @@ from django.core.cache import cache
 from .models import Post, Category, Author
 from .filters import PostFilter
 from .forms import PostForm
-# from .forms import PostForm
-# Create your views here.
+
 
 class PostList(ListView):
     model = Post
